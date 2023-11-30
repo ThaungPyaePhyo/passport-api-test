@@ -7,6 +7,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Resources\ErrorCollection;
 use App\Http\Resources\UserLoginCollection;
+use App\Http\Resources\UserLogoutCollection;
 use App\Models\User;
 use App\Services\UserAuthService;
 use Illuminate\Support\Facades\Auth;
@@ -29,10 +30,31 @@ class UserController extends Controller
     {
         $input = $request->validated();
         $token = $this->service->login($input);
-        if ($token) {
-            return new UserLoginCollection(collect($token));
+        $user = $this->service->getUserInfo($token);
+        if ($token && $user) {
+            return new UserLoginCollection([
+                'token' => collect($token),
+                'user' => $user,
+            ]);
         } else {
-            return $this->sendError('Unauthorised.',['error' => 'Unauthorised']);
+            return $this->sendError('Unauthorised.',['message' => 'Unauthorised']);
         }
+    }
+
+    public function logout()
+    {
+        $user = Auth::user();
+        if ($user) {
+            $user->token()->revoke();
+            $data = [
+                'success' => 1,
+                'status' => 200,
+                'data' => [
+                    'message' => 'Logout Successfully.'
+                ]
+            ];
+            return $data;
+        }
+    
     }
 }

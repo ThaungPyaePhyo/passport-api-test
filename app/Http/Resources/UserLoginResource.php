@@ -10,7 +10,9 @@ class UserLoginResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'token' => $this[0]->resource ?? '',
+            'id' => $this->id,
+            'name' => $this->name,
+            'email' => $this->email,
         ];
     }
 }

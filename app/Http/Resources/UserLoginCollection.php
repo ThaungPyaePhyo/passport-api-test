@@ -12,7 +12,8 @@ class UserLoginCollection extends ResourceCollection
         return [
             'success' => true,
             'status' => 200,
-            'data' =>new UserLoginResource($this->collection ?? $this),
+            'token' => new AccessTokenResource($this['token']),
+            'data' =>new UserLoginResource($this['user']),
         ];
     }
 }

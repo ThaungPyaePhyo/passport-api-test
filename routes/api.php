@@ -18,5 +18,6 @@ use App\Http\Controllers\API\BlogController;
 Route::post('login',[UserController::class,'login'])->name('login');
 Route::post('register',[UserController::class, 'register'])->name('register');
 Route::middleware('auth:api')->group(function () {
+    Route::post('logout', [UserController::class, 'logout'])->name('logout');
     Route::resource('blog', BlogController::class);
 });
